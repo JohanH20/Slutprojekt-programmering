@@ -31,7 +31,7 @@ namespace snake
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            ormen = new orm(20, 20);
+            ormen = new orm(20, 20, graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
         }
 
         /// <summary>
