@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,14 +9,15 @@ namespace snake
 	{
 		private int hastighet;
 		private int storlek;
-		private KeyboardState kstate = Keyboard.GetState();
-		private Vector2 riktning;
-		private Vector2 startposition;
+		private Vector2 plats;
+		private KeyboardState oldkstate;
+		private KeyboardState kstate;
 
 		public orm(int h, int s)
 		{
 			this.hastighet = h;
 			this.storlek = s;
+
 		}
 
 		public int Hastighet
@@ -26,7 +27,7 @@ namespace snake
 			{
 				if (value > 0)
 					hastighet = value;
-				else hastighet = 5;
+				else hastighet = 20;
 			}
 		}
 
@@ -40,25 +41,46 @@ namespace snake
 			}
 		}
 
-		public override void Update(GameTime gameTime)
+		public void Riktning()
 		{
-			riktning.Y = 5;
+			kstate = Keyboard.GetState();
 
-			if (kstate.IsKeyDown(Keys.Down))
-				riktning.Y = 5;
-			if (kstate.IsKeyDown(Keys.Up))
-				riktning.Y = -5;
-			if (kstate.IsKeyDown(Keys.Right))
-				riktning.X = 5;
-			if (kstate.IsKeyDown(Keys.Left))
-				riktning.X = -5;
+			plats.X += 5;
+
+			if (kstate.IsKeyDown(Keys.S) || oldkstate.IsKeyUp(Keys.S))
+			{
+					plats.Y += hastighet;
+			}
+
+			if (kstate.IsKeyDown(Keys.W) || oldkstate.IsKeyUp(Keys.W))
+			{
+					plats.Y -= hastighet;
+			}
+
+			if (kstate.IsKeyDown(Keys.D) || oldkstate.IsKeyUp(Keys.D))
+			{
+					plats.X += hastighet;
+			}
+
+			if (kstate.IsKeyDown(Keys.A) || oldkstate.IsKeyUp(Keys.A))
+			{
+					plats.X -= hastighet;
+			}
+			oldkstate = kstate;
 		}
-		public virtual void Draw(SpriteBatch spriteBatch)
+		public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
 		{
-			spriteBatch.Begin();
+			Texture2D kropp = new Texture2D(graphics.GraphicsDevice, storlek, storlek);
+			Color[] färg = new Color[kropp.Width * kropp.Height];
 
-			spriteBatch.Draw();
-			spriteBatch.End();
+			for (int i = 0; i < färg.Length; i++)
+				färg[i] = Color.Green;
+
+			kropp.SetData(färg);
+
+			plats = new Vector2(graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
+			
+			spriteBatch.Draw(kropp, plats, Color.White);
 		}
 	}
 
