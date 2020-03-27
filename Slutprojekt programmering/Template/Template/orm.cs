@@ -9,14 +9,17 @@ namespace snake
 	{
 		private int hastighet;
 		private int storlek;
-		private Vector2 plats;
 		private KeyboardState oldkstate;
 		private KeyboardState kstate;
+		private int x;
+		private int y;
 
-		public orm(int h, int s)
+		public orm(int h, int s, int x, int y)
 		{
-			this.hastighet = h;
-			this.storlek = s;
+			hastighet = h;
+			storlek = s;
+			this.x = x;
+			this.y = y;
 
 		}
 
@@ -27,7 +30,7 @@ namespace snake
 			{
 				if (value > 0)
 					hastighet = value;
-				else hastighet = 20;
+				else hastighet = 1;
 			}
 		}
 
@@ -45,26 +48,24 @@ namespace snake
 		{
 			kstate = Keyboard.GetState();
 
-			plats.X += 5;
-
 			if (kstate.IsKeyDown(Keys.S) || oldkstate.IsKeyUp(Keys.S))
 			{
-					plats.Y += hastighet;
+					y -= hastighet;
 			}
 
 			if (kstate.IsKeyDown(Keys.W) || oldkstate.IsKeyUp(Keys.W))
 			{
-					plats.Y -= hastighet;
+					y += hastighet;
 			}
 
 			if (kstate.IsKeyDown(Keys.D) || oldkstate.IsKeyUp(Keys.D))
 			{
-					plats.X += hastighet;
+					x -= hastighet;
 			}
 
 			if (kstate.IsKeyDown(Keys.A) || oldkstate.IsKeyUp(Keys.A))
 			{
-					plats.X -= hastighet;
+					x += hastighet;
 			}
 			oldkstate = kstate;
 		}
@@ -78,7 +79,7 @@ namespace snake
 
 			kropp.SetData(färg);
 
-			plats = new Vector2(graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
+			Vector2 plats = new Vector2(x,y);
 			
 			spriteBatch.Draw(kropp, plats, Color.White);
 		}
