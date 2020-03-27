@@ -11,7 +11,8 @@ namespace snake
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
+        orm ormen;
+
         //KOmentar
         public Game1()
         {
@@ -30,6 +31,7 @@ namespace snake
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            ormen = new orm(20, 20);
         }
 
         /// <summary>
@@ -64,6 +66,7 @@ namespace snake
                 Exit();
 
             // TODO: Add your update logic here
+            ormen.Riktning();
 
             base.Update(gameTime);
         }
@@ -76,7 +79,11 @@ namespace snake
         {
             GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here.
+            spriteBatch.Begin();
+
+            ormen.Draw(graphics, spriteBatch);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
