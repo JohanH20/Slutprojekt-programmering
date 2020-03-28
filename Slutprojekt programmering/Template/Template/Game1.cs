@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace snake
 {
@@ -12,6 +13,7 @@ namespace snake
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         orm ormen;
+        Mat maten = new Mat();
 
         //KOmentar
         public Game1()
@@ -31,7 +33,12 @@ namespace snake
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            ormen = new orm(20, 20, graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
+            ormen = new orm(3, 3, graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
+
+            Random random = new Random();
+            maten.Maten = new Vector2(random.Next(graphics.GraphicsDevice.Viewport.Bounds.Width), random.Next(graphics.GraphicsDevice.Viewport.Bounds.Height));
+
+
         }
 
         /// <summary>
@@ -80,6 +87,8 @@ namespace snake
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
+
+            maten.Draw(graphics, spriteBatch);
 
             ormen.Draw(graphics, spriteBatch);
 
