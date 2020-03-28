@@ -11,10 +11,10 @@ namespace snake
 		private int storlek;
 		private KeyboardState oldkstate;
 		private KeyboardState kstate;
-		private int x;
-		private int y;
+		private float x;
+		private float y;
 
-		public orm(int h, int s, int x, int y)
+		public orm(int h, int s, float x, float y)
 		{
 			hastighet = h;
 			storlek = s;
@@ -48,30 +48,53 @@ namespace snake
 		{
 			kstate = Keyboard.GetState();
 
-			if (kstate.IsKeyDown(Keys.S) || oldkstate.IsKeyUp(Keys.S))
+			if (kstate.IsKeyDown(Keys.S))
 			{
-					y -= hastighet;
+				y += hastighet;
+				oldkstate = kstate;
 			}
 
-			if (kstate.IsKeyDown(Keys.W) || oldkstate.IsKeyUp(Keys.W))
+			if (kstate.IsKeyDown(Keys.W))
 			{
+				y -= hastighet;
+				oldkstate = kstate;
+			}
+
+			if (kstate.IsKeyDown(Keys.D))
+			{
+				x += hastighet;
+				oldkstate = kstate;
+			}
+
+			if (kstate.IsKeyDown(Keys.A))
+			{
+				x -= hastighet;
+				oldkstate = kstate;
+			}
+
+			if (kstate.GetPressedKeys() == null || kstate.GetPressedKeys().Length == 0)
+			{
+				if (oldkstate.IsKeyDown(Keys.S))
+				{
 					y += hastighet;
-			}
-
-			if (kstate.IsKeyDown(Keys.D) || oldkstate.IsKeyUp(Keys.D))
-			{
-					x -= hastighet;
-			}
-
-			if (kstate.IsKeyDown(Keys.A) || oldkstate.IsKeyUp(Keys.A))
-			{
+				}
+				if (oldkstate.IsKeyDown(Keys.W))
+				{
+					y -= hastighet;
+				}
+				if (oldkstate.IsKeyDown(Keys.D))
+				{
 					x += hastighet;
+				}
+				if (oldkstate.IsKeyDown(Keys.A))
+				{
+					x -= hastighet;
+				}
 			}
-			oldkstate = kstate;
 		}
 		public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
 		{
-			Texture2D kropp = new Texture2D(graphics.GraphicsDevice, storlek, storlek);
+			Texture2D kropp = new Texture2D(graphics.GraphicsDevice, 20, 20);
 			Color[] färg = new Color[kropp.Width * kropp.Height];
 
 			for (int i = 0; i < färg.Length; i++)
@@ -79,8 +102,8 @@ namespace snake
 
 			kropp.SetData(färg);
 
-			Vector2 plats = new Vector2(x,y);
-			
+			Vector2 plats = new Vector2(x, y);
+
 			spriteBatch.Draw(kropp, plats, Color.White);
 		}
 	}
