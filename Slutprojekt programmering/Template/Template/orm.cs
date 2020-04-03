@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,6 +14,8 @@ namespace snake
 		private KeyboardState kstate;
 		private float x;
 		private float y;
+		private List<Vector2> kroppsdelar;
+		private Vector2 plats;
 
 		public orm(int h, int s, float x, float y)
 		{
@@ -50,61 +53,110 @@ namespace snake
 
 			if (kstate.IsKeyDown(Keys.S))
 			{
-				y += hastighet;
+				kroppsdelar.Remove(kroppsdelar[storlek - 1]);
+				kroppsdelar.Add(new Vector2(x,y + hastighet));
+				for (int i = 0; i < storlek; i++)
+				{
+					plats = kroppsdelar[i];
+				}
 				oldkstate = kstate;
 			}
 
-			if (kstate.IsKeyDown(Keys.W))
+			else if (kstate.IsKeyDown(Keys.W))
 			{
-				y -= hastighet;
+				kroppsdelar.Remove(kroppsdelar[storlek - 1]);
+				kroppsdelar.Add(new Vector2(x, y - hastighet));
+				for (int i = 0; i < storlek; i++)
+				{
+					plats = kroppsdelar[i];
+				}
 				oldkstate = kstate;
 			}
 
-			if (kstate.IsKeyDown(Keys.D))
+			else if(kstate.IsKeyDown(Keys.D))
 			{
-				x += hastighet;
+				kroppsdelar.Remove(kroppsdelar[storlek - 1]);
+				kroppsdelar.Add(new Vector2(x + hastighet, y));
+				for (int i = 0; i < storlek; i++)
+				{
+					plats = kroppsdelar[i];
+				}
 				oldkstate = kstate;
 			}
 
-			if (kstate.IsKeyDown(Keys.A))
+			else if(kstate.IsKeyDown(Keys.A))
 			{
-				x -= hastighet;
+				kroppsdelar.Remove(kroppsdelar[storlek - 1]);
+				kroppsdelar.Add(new Vector2(x - hastighet, y));
+				for (int i = 0; i < storlek; i++)
+				{
+					plats = kroppsdelar[i];
+				}
 				oldkstate = kstate;
 			}
 
-			if (kstate.GetPressedKeys() == null || kstate.GetPressedKeys().Length == 0)
+			else if(kstate.GetPressedKeys() == null || kstate.GetPressedKeys().Length == 0)
 			{
 				if (oldkstate.IsKeyDown(Keys.S))
 				{
-					y += hastighet;
+					kroppsdelar.Remove(kroppsdelar[storlek - 1]);
+					kroppsdelar.Add(new Vector2(x, y + hastighet));
+					for (int i = 0; i < storlek; i++)
+					{
+						plats = kroppsdelar[i];
+					}
 				}
 				if (oldkstate.IsKeyDown(Keys.W))
 				{
-					y -= hastighet;
+					kroppsdelar.Remove(kroppsdelar[storlek - 1]);
+					kroppsdelar.Add(new Vector2(x, y - hastighet));
+					for (int i = 0; i < storlek; i++)
+					{
+						plats = kroppsdelar[i];
+					}
 				}
 				if (oldkstate.IsKeyDown(Keys.D))
 				{
-					x += hastighet;
+					kroppsdelar.Remove(kroppsdelar[storlek - 1]);
+					kroppsdelar.Add(new Vector2(x + hastighet, y));
+					for (int i = 0; i < storlek; i++)
+					{
+						plats = kroppsdelar[i];
+					}
 				}
 				if (oldkstate.IsKeyDown(Keys.A))
 				{
-					x -= hastighet;
+					kroppsdelar.Remove(kroppsdelar[storlek - 1]);
+					kroppsdelar.Add(new Vector2(x - hastighet, y));
+					for (int i =0; i<storlek; i++)
+					{
+						plats = kroppsdelar[i];
+					}
 				}
 			}
 		}
 		public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
 		{
-			Texture2D kropp = new Texture2D(graphics.GraphicsDevice, 20, 20);
-			Color[] färg = new Color[kropp.Width * kropp.Height];
+			kroppsdelar = new List<Vector2>(storlek + 1);
+			for (int i = 0; i < storlek; i++)
+			{
+				kroppsdelar.Add(new Vector2(x, y - i * 20));
+			}
 
-			for (int i = 0; i < färg.Length; i++)
-				färg[i] = Color.Green;
+			for (int i = 0; i < storlek; i++)
+			{
+				Texture2D kropp = new Texture2D(graphics.GraphicsDevice, 20, 20);
+				Color[] färg = new Color[kropp.Width * kropp.Height];
 
-			kropp.SetData(färg);
+				for (int v = 0; v < färg.Length; v++)
+					färg[v] = Color.Green;
+				
+				kropp.SetData(färg);
 
-			Vector2 plats = new Vector2(x, y);
+				plats = kroppsdelar[i];
 
-			spriteBatch.Draw(kropp, plats, Color.White);
+				spriteBatch.Draw(kropp, plats, Color.White);
+			}
 		}
 	}
 
