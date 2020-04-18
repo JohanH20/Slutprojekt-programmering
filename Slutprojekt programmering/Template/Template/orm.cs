@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace snake
 {
-	public class orm
+	public class Orm
 	{
 		private int hastighet;
 		private int storlek;
@@ -14,10 +14,10 @@ namespace snake
 		private KeyboardState kstate;
 		private float x;
 		private float y;
-		private List<Vector2> kroppsdelar;
+		public List<Vector2> kroppsdelar;
 		private Vector2 plats;
 
-		public orm(int h, int s, float x, float y)
+		public Orm(int h, int s, float x, float y)
 		{
 			hastighet = h;
 			storlek = s;
@@ -51,47 +51,33 @@ namespace snake
 		{
 			kstate = Keyboard.GetState();
 
+			Vector2 nasta = kroppsdelar[0];
+
 			if (kstate.IsKeyDown(Keys.S))
 			{
-				kroppsdelar.Remove(kroppsdelar[storlek - 1]);
-				kroppsdelar.Add(new Vector2(x,y + hastighet));
-				for (int i = 0; i < storlek; i++)
-				{
-					plats = kroppsdelar[i];
-				}
+				kroppsdelar.RemoveAt(storlek - 1);
+				nasta = new Vector2(nasta.X, nasta.Y + hastighet);
 				oldkstate = kstate;
 			}
 
 			else if (kstate.IsKeyDown(Keys.W))
 			{
-				kroppsdelar.Remove(kroppsdelar[storlek - 1]);
-				kroppsdelar.Add(new Vector2(x, y - hastighet));
-				for (int i = 0; i < storlek; i++)
-				{
-					plats = kroppsdelar[i];
-				}
+				kroppsdelar.RemoveAt(storlek - 1);
+				nasta = new Vector2(nasta.X, nasta.Y - hastighet);
 				oldkstate = kstate;
 			}
 
 			else if(kstate.IsKeyDown(Keys.D))
 			{
-				kroppsdelar.Remove(kroppsdelar[storlek - 1]);
-				kroppsdelar.Add(new Vector2(x + hastighet, y));
-				for (int i = 0; i < storlek; i++)
-				{
-					plats = kroppsdelar[i];
-				}
+				kroppsdelar.RemoveAt(storlek - 1);
+				nasta = new Vector2(nasta.X + hastighet, nasta.Y);
 				oldkstate = kstate;
 			}
 
 			else if(kstate.IsKeyDown(Keys.A))
 			{
-				kroppsdelar.Remove(kroppsdelar[storlek - 1]);
-				kroppsdelar.Add(new Vector2(x - hastighet, y));
-				for (int i = 0; i < storlek; i++)
-				{
-					plats = kroppsdelar[i];
-				}
+				kroppsdelar.RemoveAt(storlek - 1);
+				nasta = new Vector2(nasta.X - hastighet, nasta.Y);
 				oldkstate = kstate;
 			}
 
@@ -99,45 +85,31 @@ namespace snake
 			{
 				if (oldkstate.IsKeyDown(Keys.S))
 				{
-					kroppsdelar.Remove(kroppsdelar[storlek - 1]);
-					kroppsdelar.Add(new Vector2(x, y + hastighet));
-					for (int i = 0; i < storlek; i++)
-					{
-						plats = kroppsdelar[i];
-					}
+					kroppsdelar.RemoveAt(storlek - 1);
+					nasta = new Vector2(nasta.X, nasta.Y + hastighet);
 				}
 				if (oldkstate.IsKeyDown(Keys.W))
 				{
-					kroppsdelar.Remove(kroppsdelar[storlek - 1]);
-					kroppsdelar.Add(new Vector2(x, y - hastighet));
-					for (int i = 0; i < storlek; i++)
-					{
-						plats = kroppsdelar[i];
-					}
+					kroppsdelar.RemoveAt(storlek - 1);
+					nasta = new Vector2(nasta.X, nasta.Y - hastighet);
 				}
 				if (oldkstate.IsKeyDown(Keys.D))
 				{
-					kroppsdelar.Remove(kroppsdelar[storlek - 1]);
-					kroppsdelar.Add(new Vector2(x + hastighet, y));
-					for (int i = 0; i < storlek; i++)
-					{
-						plats = kroppsdelar[i];
-					}
+					kroppsdelar.RemoveAt(storlek - 1);
+					nasta = new Vector2(nasta.X + hastighet, nasta.Y);
 				}
 				if (oldkstate.IsKeyDown(Keys.A))
 				{
-					kroppsdelar.Remove(kroppsdelar[storlek - 1]);
-					kroppsdelar.Add(new Vector2(x - hastighet, y));
-					for (int i =0; i<storlek; i++)
-					{
-						plats = kroppsdelar[i];
-					}
+					kroppsdelar.RemoveAt(storlek - 1);
+					nasta = new Vector2(nasta.X - hastighet, nasta.Y);
 				}
 			}
+
+			kroppsdelar.Insert(0, nasta);
 		}
 		public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
 		{
-			kroppsdelar = new List<Vector2>(storlek + 1);
+			kroppsdelar = new List<Vector2>(storlek);
 			for (int i = 0; i < storlek; i++)
 			{
 				kroppsdelar.Add(new Vector2(x, y - i * 20));
