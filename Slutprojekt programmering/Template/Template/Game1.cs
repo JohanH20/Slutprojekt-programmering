@@ -12,7 +12,7 @@ namespace snake
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        orm ormen;
+        Orm ormen;
         Mat maten = new Mat();
 
         //KOmentar
@@ -33,11 +33,10 @@ namespace snake
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            ormen = new orm(20, 3, graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
+            ormen = new Orm(20, 3, graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
 
             Random random = new Random();
             maten.Maten = new Vector2(random.Next(graphics.GraphicsDevice.Viewport.Bounds.Width), random.Next(graphics.GraphicsDevice.Viewport.Bounds.Height));
-
         }
 
         /// <summary>
