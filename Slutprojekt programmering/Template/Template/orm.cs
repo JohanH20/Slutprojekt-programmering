@@ -8,22 +8,22 @@ namespace snake
 {
 	public class Orm
 	{
-		private int hastighet;
-		private int storlek;
+		private int hastighet = 20;
+		private int storlek = 3;
 		private KeyboardState oldkstate;
 		private KeyboardState kstate;
 		private float x;
 		private float y;
-		public List<Vector2> kroppsdelar;
+		private float xsenast;
+		private float ysenast;
+		private List<Vector2> kroppsdelar;
+		private List<Orm> kropp;
 		private Vector2 plats;
 
-		public Orm(int h, int s, float x, float y)
+		public Orm(float X, float Y)
 		{
-			hastighet = h;
-			storlek = s;
-			this.x = x;
-			this.y = y;
-
+			this.x = X;
+			this.y = Y;
 		}
 
 		public int Hastighet
@@ -47,37 +47,51 @@ namespace snake
 			}
 		}
 
+		public float Xsenast
+		{
+			get { return xsenast; }
+			set { xsenast = value; }
+		}
+
+		public float Ysenast
+		{
+			get { return ysenast; }
+			set { ysenast = value; }
+		}
+
 		public void Riktning()
 		{
 			kstate = Keyboard.GetState();
 
-			Vector2 nasta = kroppsdelar[0];
+			kropp = new List<Orm>(storlek);
+
+			for (int i = 0; i < storlek; i++)
+			{
+				Orm tempkropp = new Orm(x, y - i * 20);
+				kropp.Add(tempkropp);
+			}
 
 			if (kstate.IsKeyDown(Keys.S))
 			{
-				kroppsdelar.RemoveAt(storlek - 1);
-				nasta = new Vector2(nasta.X, nasta.Y + hastighet);
+				kropp[0] = new Orm(x, y += hastighet);
 				oldkstate = kstate;
 			}
 
 			else if (kstate.IsKeyDown(Keys.W))
 			{
-				kroppsdelar.RemoveAt(storlek - 1);
-				nasta = new Vector2(nasta.X, nasta.Y - hastighet);
+				kropp[0] = new Orm(x, y -= hastighet);
 				oldkstate = kstate;
 			}
 
 			else if(kstate.IsKeyDown(Keys.D))
 			{
-				kroppsdelar.RemoveAt(storlek - 1);
-				nasta = new Vector2(nasta.X + hastighet, nasta.Y);
+				kropp[0] = new Orm(x += hastighet, y);
 				oldkstate = kstate;
 			}
 
 			else if(kstate.IsKeyDown(Keys.A))
 			{
-				kroppsdelar.RemoveAt(storlek - 1);
-				nasta = new Vector2(nasta.X - hastighet, nasta.Y);
+				kropp[0] = new Orm(x -= hastighet, y);
 				oldkstate = kstate;
 			}
 
@@ -85,27 +99,28 @@ namespace snake
 			{
 				if (oldkstate.IsKeyDown(Keys.S))
 				{
-					kroppsdelar.RemoveAt(storlek - 1);
-					nasta = new Vector2(nasta.X, nasta.Y + hastighet);
+					kropp[0] = new Orm(x, y += hastighet);
 				}
 				if (oldkstate.IsKeyDown(Keys.W))
 				{
-					kroppsdelar.RemoveAt(storlek - 1);
-					nasta = new Vector2(nasta.X, nasta.Y - hastighet);
+					kropp[0] = new Orm(x, y -= hastighet);
 				}
-				if (oldkstate.IsKeyDown(Keys.D))
+				if (oldkstate.IsKeyDown(Keys.D)) 
 				{
-					kroppsdelar.RemoveAt(storlek - 1);
-					nasta = new Vector2(nasta.X + hastighet, nasta.Y);
+					kropp[0] = new Orm(x += hastighet, y);
 				}
 				if (oldkstate.IsKeyDown(Keys.A))
 				{
-					kroppsdelar.RemoveAt(storlek - 1);
-					nasta = new Vector2(nasta.X - hastighet, nasta.Y);
+					kropp[0] = new Orm(x -= hastighet, y);
 				}
 			}
-
-			kroppsdelar.Insert(0, nasta);
+			for (int i = 1; i < kropp.Count; i++)
+			{
+				kropp[i].xsenast = kropp[i].x;
+				kropp[i].ysenast = kropp[i].y;
+				kropp[i].x = kropp[i - 1].xsenast;
+				kropp[i].y = kropp[i - 1].ysenast;
+			}
 		}
 		public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
 		{
@@ -114,20 +129,19 @@ namespace snake
 			{
 				kroppsdelar.Add(new Vector2(x, y - i * 20));
 			}
-
-			for (int i = 0; i < storlek; i++)
+			for (int i = 0; i < kroppsdelar.Count; i++)
 			{
-				Texture2D kropp = new Texture2D(graphics.GraphicsDevice, 20, 20);
-				Color[] färg = new Color[kropp.Width * kropp.Height];
+				Texture2D kroppen = new Texture2D(graphics.GraphicsDevice, 20, 20);
+				Color[] färg = new Color[kroppen.Width * kroppen.Height];
 
 				for (int v = 0; v < färg.Length; v++)
 					färg[v] = Color.Green;
 				
-				kropp.SetData(färg);
+				kroppen.SetData(färg);
 
 				plats = kroppsdelar[i];
 
-				spriteBatch.Draw(kropp, plats, Color.White);
+				spriteBatch.Draw(kroppen, plats, Color.White);
 			}
 		}
 	}
