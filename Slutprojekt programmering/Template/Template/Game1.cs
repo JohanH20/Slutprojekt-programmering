@@ -12,14 +12,17 @@ namespace snake
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Orm ormen;
-        Mat maten = new Mat();
+        private Orm ormen;
+        private Mat maten = new Mat();
 
         //KOmentar
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            IsFixedTimeStep = true;
+            TargetElapsedTime = TimeSpan.FromMilliseconds(80);
         }
 
         /// <summary>
@@ -35,8 +38,8 @@ namespace snake
             base.Initialize();
             ormen = new Orm(graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
 
-            Random random = new Random();
-            maten.Maten = new Vector2(random.Next(graphics.GraphicsDevice.Viewport.Bounds.Width), random.Next(graphics.GraphicsDevice.Viewport.Bounds.Height));
+            maten.Initialize(graphics);
+            ormen.Initialize();
         }
 
         /// <summary>
@@ -72,6 +75,8 @@ namespace snake
 
             // TODO: Add your update logic here
             ormen.Riktning();
+
+            maten.Kollision();
 
             base.Update(gameTime);
         }
