@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace snake
 {
@@ -12,8 +13,10 @@ namespace snake
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private Orm ormen;
+        private Orm ormen = new Orm();
         private Mat maten = new Mat();
+        private List<Vector2> kroppsdelar = new List<Vector2>();
+        private List<Vector2> temp = new List<Vector2>();
 
         //KOmentar
         public Game1()
@@ -38,8 +41,28 @@ namespace snake
             base.Initialize();
             ormen = new Orm(graphics.GraphicsDevice.Viewport.Bounds.Width / 2 - 20, graphics.GraphicsDevice.Viewport.Bounds.Height / 2 - 20);
 
+            ormen.Startx = ormen.X;
+            ormen.Starty = ormen.Y;
+
+            kroppsdelar = new List<Vector2>(ormen.Storlek);
+
+            if (kroppsdelar.Count == 0)
+            {
+                for (int i = 0; i < ormen.Storlek; i++)
+                {
+                    kroppsdelar.Add(new Vector2(ormen.Startx, ormen.Starty - i * 20));
+                }
+            }
+
+
+            temp = new List<Vector2>(ormen.Storlek);
+
+            for (int i = 0; i < ormen.Storlek; i++)
+            {
+                temp.Add(kroppsdelar[0]);
+            }
+
             maten.Initialize(graphics);
-            ormen.Initialize();
         }
 
         /// <summary>
@@ -74,9 +97,9 @@ namespace snake
                 Exit();
 
             // TODO: Add your update logic here
-            ormen.Riktning();
+            ormen.Riktning(kroppsdelar, temp);
 
-            maten.Kollision();
+            maten.Kolliderar(graphics, kroppsdelar, temp);
 
             base.Update(gameTime);
         }
@@ -93,7 +116,7 @@ namespace snake
 
             maten.Draw(graphics, spriteBatch);
 
-            ormen.Draw(graphics, spriteBatch);
+            ormen.Draw(graphics, spriteBatch, kroppsdelar);
 
             spriteBatch.End();
 

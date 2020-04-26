@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace snake
 {
@@ -11,9 +12,9 @@ namespace snake
         private int x;
         private int y;
         private Orm ormen;
-        private Rectangle huvudhitbox;
-        private Rectangle mathitbox;
-        private GraphicsDeviceManager graphics;
+        private Rectangle huvudHitbox;
+        private Rectangle matHitbox;
+        private Random random = new Random();
 
         public Mat() { }
 
@@ -31,22 +32,35 @@ namespace snake
 
         public void Initialize(GraphicsDeviceManager graphics)
         {
-            Random random = new Random();
-            x = random.Next(graphics.GraphicsDevice.Viewport.Bounds.Width / 20) * 20;
-            y = random.Next(graphics.GraphicsDevice.Viewport.Bounds.Height / 20) * 20;
+            GenererarMat(graphics);
         }
 
-        public void Kollision()
+        public Rectangle GenererarMat(GraphicsDeviceManager graphics)
         {
             ormen = new Orm();
-            huvudhitbox = new Rectangle(ormen.X, ormen.Y, 20, 20);
-            mathitbox = new Rectangle(x, y, 20, 20);
 
-            if (huvudhitbox.Intersects(mathitbox))
+            x = random.Next(graphics.GraphicsDevice.Viewport.Bounds.Width / 20) * 20;
+            y = random.Next(graphics.GraphicsDevice.Viewport.Bounds.Height / 20) * 20;
+
+            matHitbox = new Rectangle(x, y, 20, 20);
+
+            return matHitbox;
+        }
+
+        public void Kolliderar(GraphicsDeviceManager graphics, List<Vector2> kroppsdelar, List<Vector2> temp)
+        {
+            float x = kroppsdelar[0].X;
+            float y = kroppsdelar[0].Y;
+
+            int xs = (int)x;
+            int ys = (int)y;
+
+            huvudHitbox = new Rectangle(xs, ys, 20, 20);
+
+            if (matHitbox.Intersects(huvudHitbox))
             {
-                ormen.Storlek += 1;
-
-                Initialize(graphics);
+                ormen.Växorm(kroppsdelar, temp);
+                GenererarMat(graphics);
             }
         }
 
