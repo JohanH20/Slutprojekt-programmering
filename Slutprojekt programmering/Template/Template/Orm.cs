@@ -9,13 +9,11 @@ namespace snake
 	public class Orm
 	{
 		private int hastighet = 20;
-		private int storlek = 5;
+		private int storlek = 4;
 		private KeyboardState oldkstate;
 		private KeyboardState kstate;
 		private int x;
 		private int y;
-		private List<Vector2> kroppsdelar;
-		private List<Vector2> temp;
 		private Vector2 plats;
 		private bool up = false;
 		private bool höger = true;
@@ -43,6 +41,18 @@ namespace snake
 			set { y = value; }
 		}
 
+		public int Startx
+		{
+			get { return startx; }
+			set { startx = value; }
+		}
+
+		public int Starty
+		{
+			get { return starty; }
+			set { starty = value; }
+		}
+
 		public int Hastighet
 		{
 			get { return hastighet; }
@@ -64,36 +74,7 @@ namespace snake
 			}
 		}
 
-		public List<Vector2> Kroppsdelar
-		{
-			get { return kroppsdelar; }
-			set { kroppsdelar = value; }
-		}
-
-		public void Initialize()
-		{
-
-			startx = x;
-			starty = y;
-
-			kroppsdelar = new List<Vector2>(storlek);
-			if (kroppsdelar.Count == 0)
-			{
-				for (int i = 0; i < storlek; i++)
-				{
-					kroppsdelar.Add(new Vector2(startx, starty - i * 20));
-				}
-			}
-
-			temp = new List<Vector2>(storlek);
-
-			for (int i = 0; i < storlek; i++)
-			{
-				temp.Add(kroppsdelar[0]);
-			}
-		}
-
-		public void Riktning()
+		public void Riktning(List<Vector2> kroppsdelar, List<Vector2> temp)
 		{
 			kstate = Keyboard.GetState();
 			if (kstate.GetPressedKeys().Length == 1)
@@ -167,7 +148,7 @@ namespace snake
 				kroppsdelar[i] = new Vector2(temp[i - 1].X, temp[i - 1].Y);
 			}
 		}
-		public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+		public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, List<Vector2> kroppsdelar)
 		{
 			for (int i = 0; i < kroppsdelar.Count; i++)
 			{
@@ -183,6 +164,17 @@ namespace snake
 
 				spriteBatch.Draw(kroppen, plats, Color.White);
 			}
+		}
+
+		public void Växorm(List<Vector2> kroppsdelar, List<Vector2> temp)
+		{
+			int sista = kroppsdelar.Count - 1;
+
+			float xsista = kroppsdelar[sista].X;
+			float ysista = kroppsdelar[sista].Y;
+
+			kroppsdelar.Add(new Vector2(xsista, ysista));
+			temp.Add(new Vector2(xsista, ysista));
 		}
 	}
 
