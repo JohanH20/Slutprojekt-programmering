@@ -6,10 +6,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace snake
 {
+	/// <summary>
+	/// Detta är klassen som har hand om ormen i spelet.
+	/// </summary>
 	public class Orm
 	{
 		private int hastighet = 20;
-		private int storlek = 4;
+		private int storlek;
 		private KeyboardState oldkstate;
 		private KeyboardState kstate;
 		private int x;
@@ -22,11 +25,17 @@ namespace snake
 		private int startx;
 		private int starty;
 
+		/// <summary>
+		/// Detta är en konstruktor för orm klassen för att ge värden på x och y.
+		/// </summary>
 		public Orm(int X, int Y)
 		{
 			this.x = X;
 			this.y = Y;
 		}
+		/// <summary>
+		/// Detta är en tom konstruktor för ormklassen för att jag ska kunna kalla den utan att ha några parametrar.
+		/// </summary>
 		public Orm() { }
 
 		public int X
@@ -73,14 +82,17 @@ namespace snake
 					storlek = value;
 			}
 		}
-
+		/// <summary>
+		/// Denna metoden gör så att rörelsen för ormen fungerar som den ska genom att läsa av vilken knapp som trycks 
+		///och sedan ger en ny vektor för ormens huvud och då får alla kroppsdelar den tidigare kroppsdelens plats
+		/// </summary>
 		public void Riktning(List<Vector2> kroppsdelar, List<Vector2> temp)
 		{
 			kstate = Keyboard.GetState();
-			if (kstate.GetPressedKeys().Length == 1)
+			if (kstate.GetPressedKeys() == null || kstate.GetPressedKeys().Length == 0 || kstate.GetPressedKeys().Length > 0)
 			{
 
-				if (kstate.IsKeyDown(Keys.S) && ner == true)
+				if (kstate.IsKeyDown(Keys.S) && ner == true && kstate.GetPressedKeys().Length == 1)
 				{
 					kroppsdelar[0] = new Vector2(x, y += hastighet);
 					oldkstate = kstate;
@@ -90,7 +102,7 @@ namespace snake
 					ner = true;
 				}
 
-				else if (kstate.IsKeyDown(Keys.W) && up == true)
+				else if (kstate.IsKeyDown(Keys.W) && up == true && kstate.GetPressedKeys().Length == 1)
 				{
 					kroppsdelar[0] = new Vector2(x, y -= hastighet);
 					oldkstate = kstate;
@@ -100,7 +112,7 @@ namespace snake
 					ner = false;
 				}
 
-				else if (kstate.IsKeyDown(Keys.D) && höger == true)
+				else if (kstate.IsKeyDown(Keys.D) && höger == true && kstate.GetPressedKeys().Length == 1)
 				{
 					kroppsdelar[0] = new Vector2(x += hastighet, y);
 					oldkstate = kstate;
@@ -110,7 +122,7 @@ namespace snake
 					ner = true;
 				}
 
-				else if (kstate.IsKeyDown(Keys.A) && vänster == true)
+				else if (kstate.IsKeyDown(Keys.A) && vänster == true && kstate.GetPressedKeys().Length == 1)
 				{
 					kroppsdelar[0] = new Vector2(x -= hastighet, y);
 					oldkstate = kstate;
@@ -119,25 +131,25 @@ namespace snake
 					vänster = true;
 					ner = true;
 				}
-			}
 
-			else if (kstate.GetPressedKeys() == null || kstate.GetPressedKeys().Length == 0)
-			{
-				if (oldkstate.IsKeyDown(Keys.S) && ner == true)
+				else
 				{
-					kroppsdelar[0] = new Vector2(x, y += hastighet);
-				}
-				if (oldkstate.IsKeyDown(Keys.W) && up == true)
-				{
-					kroppsdelar[0] = new Vector2(x, y -= hastighet);
-				}
-				if (oldkstate.IsKeyDown(Keys.D) && höger == true)
-				{
-					kroppsdelar[0] = new Vector2(x += hastighet, y);
-				}
-				if (oldkstate.IsKeyDown(Keys.A) && vänster == true)
-				{
-					kroppsdelar[0] = new Vector2(x -= hastighet, y);
+					if (oldkstate.IsKeyDown(Keys.S))
+					{
+						kroppsdelar[0] = new Vector2(x, y += hastighet);
+					}
+					if (oldkstate.IsKeyDown(Keys.W))
+					{
+						kroppsdelar[0] = new Vector2(x, y -= hastighet);
+					}
+					if (oldkstate.IsKeyDown(Keys.D))
+					{
+						kroppsdelar[0] = new Vector2(x += hastighet, y);
+					}
+					if (oldkstate.IsKeyDown(Keys.A))
+					{
+						kroppsdelar[0] = new Vector2(x -= hastighet, y);
+					}
 				}
 			}
 
@@ -148,24 +160,21 @@ namespace snake
 				kroppsdelar[i] = new Vector2(temp[i - 1].X, temp[i - 1].Y);
 			}
 		}
-		public void Draw(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, List<Vector2> kroppsdelar)
+		/// <summary>
+		/// Denna metoden ritar ut ormen.
+		/// </summary>
+		public void Draw(SpriteBatch spriteBatch, List<Vector2> kroppsdelar, Texture2D kroppen)
 		{
 			for (int i = 0; i < kroppsdelar.Count; i++)
 			{
-				Texture2D kroppen = new Texture2D(graphics.GraphicsDevice, 20, 20);
-				Color[] färg = new Color[kroppen.Width * kroppen.Height];
-
-				for (int v = 0; v < färg.Length; v++)
-					färg[v] = Color.Green;
-				
-				kroppen.SetData(färg);
-
 				plats = kroppsdelar[i];
 
 				spriteBatch.Draw(kroppen, plats, Color.White);
 			}
 		}
-
+		/// <summary>
+		/// Denna metoden gör så att ormen växer och denna kallas när det sker en kollison med en mat.
+		/// </summary>
 		public void Växorm(List<Vector2> kroppsdelar, List<Vector2> temp)
 		{
 			int sista = kroppsdelar.Count - 1;
